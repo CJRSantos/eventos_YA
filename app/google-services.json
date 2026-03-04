@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "757304884580",
+    "project_id": "eventosya-f7f96",
+    "storage_bucket": "eventosya-f7f96.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757304884580:android:0b74e6cf075d4b18ddce71",
+        "android_client_info": {
+          "package_name": "com.rengifosantoscj.eventosya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "757304884580-mpq1bv1tp7uri9gtav79s9d2h503h6fd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjxgF8Q4T3Y9gFYE-oGNgNW5dfGIoMN50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "757304884580-mpq1bv1tp7uri9gtav79s9d2h503h6fd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
