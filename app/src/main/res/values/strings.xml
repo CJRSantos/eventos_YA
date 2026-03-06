@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">eventosYA</string>
+    <string name="login_title">Bienvenido a EventosYA</string>
+    <string name="email_label">Correo electrónico</string>
+    <string name="password_label">Contraseña</string>
+    <string name="login_button">Iniciar Sesión</string>
+    <string name="google_login_button">Continuar con Google</string>
+    <string name="google_web_client_id">TU_CLIENT_ID_AQUI</string>
 </resources>
