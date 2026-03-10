@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "757304884580-cml088f6uvoo057skp8qhbj0k5hnsrtl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rengifosantoscj.eventosya",
+            "certificate_hash": "efc8eb5c10c56c1ce9614ace2f886df4f5b8ad2d"
+          }
+        },
+        {
           "client_id": "757304884580-mpq1bv1tp7uri9gtav79s9d2h503h6fd.apps.googleusercontent.com",
           "client_type": 3
         }

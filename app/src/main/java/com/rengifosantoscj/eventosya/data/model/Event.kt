@@ -6,6 +6,8 @@ data class Event(
     val description: String = "",
     val date: String = "",
     val location: String = "",
+    val latitude: Double? = null,
+    val longitude: Double? = null,
     val imageUrl: String = "",
     val category: String = "",
     val price: Double = 0.0,

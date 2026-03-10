@@ -1,17 +1,21 @@
 package com.rengifosantoscj.eventosya.ui.screens.admin
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,13 +28,15 @@ import kotlinx.coroutines.tasks.await
 @Composable
 fun AdminHomeScreen(
     viewModel: AdminHomeViewModel = viewModel(),
-    onNavigateToCreate: () -> Unit
+    onNavigateToCreate: () -> Unit,
+    onNavigateToDetails: (String) -> Unit
 ) {
     val state = viewModel.uiState
     val user = FirebaseAuth.getInstance().currentUser
     var isAdmin by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
+    var isSearchExpanded by remember { mutableStateOf(false) }
 
-    // Verificar si el usuario es Admin realmente
     LaunchedEffect(user?.uid) {
         user?.uid?.let { uid ->
             try {
@@ -46,15 +52,39 @@ fun AdminHomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Eventos Disponibles") },
+                title = {
+                    if (isSearchExpanded) {
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            placeholder = { Text("Buscar eventos...") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+                                unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent
+                            )
+                        )
+                    } else {
+                        Text("Eventos Disponibles")
+                    }
+                },
                 actions = {
+                    IconButton(onClick = { 
+                        isSearchExpanded = !isSearchExpanded 
+                        if (!isSearchExpanded) searchQuery = ""
+                    }) {
+                        Icon(
+                            if (isSearchExpanded) Icons.Default.Close else Icons.Default.Search, 
+                            contentDescription = "Buscar"
+                        )
+                    }
                     IconButton(onClick = viewModel::fetchEvents) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refrescar")
                     }
                 }
             )
         },
-        // EL BOTÓN SOLO SE MUESTRA SI ES ADMIN
         floatingActionButton = {
             if (isAdmin) {
                 FloatingActionButton(onClick = onNavigateToCreate) {
@@ -76,11 +106,25 @@ fun AdminHomeScreen(
                         CircularProgressIndicator()
                     }
                     is AdminHomeUiState.Success -> {
-                        EventList(
-                            events = targetState.events,
-                            onDelete = viewModel::deleteEvent,
-                            showDeleteIcon = isAdmin // Solo admin ve el tachito
-                        )
+                        val filteredEvents = if (searchQuery.isEmpty()) {
+                            targetState.events
+                        } else {
+                            targetState.events.filter { 
+                                it.title.contains(searchQuery, ignoreCase = true) || 
+                                it.description.contains(searchQuery, ignoreCase = true) 
+                            }
+                        }
+
+                        if (filteredEvents.isEmpty()) {
+                            Text("No se encontraron eventos")
+                        } else {
+                            EventList(
+                                events = filteredEvents,
+                                onDelete = viewModel::deleteEvent,
+                                onEventClick = onNavigateToDetails,
+                                showDeleteIcon = isAdmin
+                            )
+                        }
                     }
                     is AdminHomeUiState.Empty -> {
                         Text("No hay eventos creados todavía")
@@ -98,7 +142,8 @@ fun AdminHomeScreen(
 fun EventList(
     events: List<Event>,
     onDelete: (String) -> Unit,
-    showDeleteIcon: Boolean // Nuevo parámetro
+    onEventClick: (String) -> Unit,
+    showDeleteIcon: Boolean
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -107,7 +152,9 @@ fun EventList(
     ) {
         items(events) { event ->
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onEventClick(event.id) },
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Row(
@@ -118,8 +165,13 @@ fun EventList(
                         Text(event.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                         Text(event.date, style = MaterialTheme.typography.bodySmall)
                         Text(event.location, style = MaterialTheme.typography.bodySmall)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        SuggestionChip(
+                            onClick = {},
+                            label = { Text(event.category, style = MaterialTheme.typography.labelSmall) }
+                        )
                     }
-                    if (showDeleteIcon) { // Solo se muestra si es Admin
+                    if (showDeleteIcon) {
                         IconButton(onClick = { onDelete(event.id) }) {
                             Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
                         }

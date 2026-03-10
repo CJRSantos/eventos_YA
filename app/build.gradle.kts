@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.messaging)
 
     // Credentials
     implementation(libs.androidx.credentials)
@@ -70,6 +71,21 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
+
+    // Maps
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
+
+    // QR & Ticketing
+    implementation(libs.zxing.core)
+    implementation(libs.barcode.scanning)
+    implementation(libs.play.services.pay)
+
+    // CameraX
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
